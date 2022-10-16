@@ -1,0 +1,65 @@
+﻿<vk:ThemeWindow
+    x:Class="DxfToElevationModel.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:DxfToElevationModel"
+    xmlns:h="http://helix-toolkit.org/wpf"
+    xmlns:vk="http://schemas.vagabond-k.com/winfx/2016/xaml"
+    mc:Ignorable="d"
+    Icon="/dxf.ico"
+    Title="DXF to Elevation Model"
+    Width="1024" Height="768"
+    Background="Black"
+    d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}">
+    <FrameworkElement.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Padding" Value="10,5"/>
+        </Style>
+        <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="ColumnDefinition">
+            <Setter Property="Width" Value="Auto"/>
+        </Style>
+    </FrameworkElement.Resources>
+    <Grid x:Name="root" IsEnabled="{Binding IsLoading, Converter={vk:NegationConverter}}">
+        <h:HelixViewport3D x:Name="viewPort">
+            <local:DxfTerrainVisual3D
+                ElevationModel="{Binding ElementName=root, Path=DataContext.ElevationModel}"
+                MapVisible="{Binding ElementName=root, Path=DataContext.MapVisible}"
+                MapColorInverse="{Binding ElementName=root, Path=DataContext.MapColorInverse}"
+                ModelUpdated="DxfTerrainVisual3D_ModelUpdated"/>
+            <ModelVisual3D>
+                <ModelVisual3D.Content>
+                    <DirectionalLight Color="White" Direction="0, 0, -1"/>
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+            <ModelVisual3D>
+                <ModelVisual3D.Content>
+                    <DirectionalLight Color="White" Direction="0, 0, 1"/>
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+        </h:HelixViewport3D>
+        <Grid VerticalAlignment="Top" Margin="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Command="{Binding OpenDxfCommand}">
+                <TextBlock><Run FontFamily="Segoe MDL2 Assets" Text="&#xED25;"/> DXF 파일 열기</TextBlock>
+            </Button>
+            <CheckBox Grid.Column="2" IsChecked="{Binding MapVisible}" Content="DXF 지도 표시"/>
+            <CheckBox Grid.Column="3" IsChecked="{Binding MapColorInverse}" IsEnabled="{Binding MapVisible}" Content="지도 색상 반전"/>
+        </Grid>
+        <ProgressBar
+            Visibility="{Binding IsLoading, Converter={vk:BooleanToVisibilityConverter}}"
+            IsIndeterminate="{Binding IsLoading}"
+            HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Width="200"/>
+    </Grid>
+</vk:ThemeWindow>
