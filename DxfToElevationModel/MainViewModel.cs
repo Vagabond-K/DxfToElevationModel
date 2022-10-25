@@ -46,7 +46,8 @@ namespace DxfToElevationModel
                 catch (Exception ex)
                 {
                     IsLoading = false;
-                    ThemeMessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    App.Current.Dispatcher.Invoke(() =>
+                        ThemeMessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error));
                 }
             });
     }

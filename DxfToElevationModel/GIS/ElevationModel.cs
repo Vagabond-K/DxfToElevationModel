@@ -318,7 +318,8 @@ namespace DxfToElevationModel.GIS
 
                         for (int y = maskY1; y <= maskY2; y++)
                             for (int x = maskX1; x <= maskX2; x++)
-                                list.Add(elevations[y][x]);
+                                if (!double.IsNaN(elevations[y][x]))
+                                    list.Add(elevations[y][x]);
 
                         list.Sort();
 
